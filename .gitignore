@@ -1,0 +1,47 @@
+# ============================================================
+#  DATOS PERSONALES - NUNCA SUBIR AL REPOSITORIO
+#  Los cuadros de personal (PDF) y las nominas (Excel) contienen
+#  nombres y cedulas de identidad de las personas.
+# ============================================================
+*.pdf
+*.xlsx
+*.xls
+
+# Carpeta con los cuadros de personal
+CUADRO_PERSONAL_PDF/
+
+# Leftovers de la autoactualizacion del EXE
+*.old
+*.nueva
+
+# Ajustes manuales con nombres y cedulas reales
+manual_nombres.py
+
+# ============================================================
+#  PYTHON
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# Empaquetado / distribucion
+build/
+dist/
+*.spec
+*.exe
+*.egg-info/
+
+# ============================================================
+#  SISTEMA OPERATIVO / EDITORES
+# ============================================================
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+~$*
+*.bak
