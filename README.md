@@ -121,10 +121,12 @@ El **EXE se autoverifica** cada vez que se ejecuta:
 1. 🌐 Consulta la última versión publicada en GitHub Releases (`releases/latest`).
 2. 💬 Si existe una versión más nueva, pregunta: **«¿Quieres descargarla ahora?»**.
    - ✅ **Sí** → descarga el EXE nuevo, reemplaza el actual y se reinicia solo.
-   - ❌ **No** → continúa normalmente con la versión actual.
+   - ❌ **No** → continúa normalmente con la versión actual (y **no vuelve a preguntar por esa versión**).
 3. 📴 Si no hay internet o falla la consulta, **abre directamente sin molestar**.
 
-> ℹ️ El chequeo funciona si el repositorio es **público** (la API de GitHub no pide token).
+> ⏱️ **Límite de API respetado:** GitHub permite 60 consultas/hora por IP sin autenticar. Por eso el EXE consulta la red **como máximo una vez cada 24 horas** y guarda el resultado en una caché local (`%LOCALAPPDATA%\NominaDocentes\actualizacion.json`). Abrir el programa muchas veces seguidas **no** genera consultas repetidas; si hay una actualización pendiente que no descargaste, el aviso reaparece sin volver a consultar la red.
+
+> ℹ️ El chequeo funciona porque el repositorio es **público** (la API de GitHub no pide token).
 
 ## 🏷️ Publicar una nueva versión
 
@@ -146,6 +148,8 @@ Lo que hace por dentro:
 | 4️⃣ | Crea el **Release** en GitHub adjuntando el EXE |
 
 A partir del siguiente arranque, todos los EXE viejos detectan el release nuevo y ofrecen actualizarse. 🎉
+
+> 💡 El script auxiliar `bump_version.py` también se puede usar a mano (`python bump_version.py 1.0.1`) para ajustar la versión sin publicar todavía.
 
 ---
 
