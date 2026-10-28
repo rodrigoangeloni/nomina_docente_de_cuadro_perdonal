@@ -34,6 +34,11 @@ from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
+def _ruta_icono():
+    """Ruta del icono de la aplicacion (funciona en script y en EXE)."""
+    base = getattr(sys, "_MEIPASS", BASE)   # dentro del EXE onefile
+    return os.path.join(base, "favicon.ico")
+
 # ----------------------------------------------------------------------
 # 1. Configuracion
 # ----------------------------------------------------------------------
@@ -391,6 +396,12 @@ def main_gui():
     root = tk.Tk()
     root.withdraw()
     root.attributes("-topmost", True)
+    icono = _ruta_icono()
+    if os.path.exists(icono):
+        try:
+            root.iconbitmap(icono)
+        except Exception:
+            pass   # sin icono personalizado, sigue con el estandar
 
     if verificar_actualizacion(root):
         root.destroy()

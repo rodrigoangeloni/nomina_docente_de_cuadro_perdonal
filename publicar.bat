@@ -34,7 +34,7 @@ if errorlevel 1 (
 
 echo  [2/4] Compilando EXE ...
 "%VPY%" -m pip install pyinstaller --quiet
-"%VPY%" -m PyInstaller --onefile --noconsole --clean --name "NOMINA DOCENTES" --collect-all pypdfium2 generar_nomina.py
+"%VPY%" -m PyInstaller --onefile --noconsole --clean --name "NOMINA DOCENTES" --icon "favicon.ico" --add-data "favicon.ico;." --collect-all pypdfium2 generar_nomina.py
 if errorlevel 1 (
     echo  [ERROR] Fallo la compilacion.
     pause

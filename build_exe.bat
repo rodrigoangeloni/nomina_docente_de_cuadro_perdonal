@@ -25,6 +25,8 @@ echo.
 echo  Compilando EXE - esto tarda unos minutos...
 "%VPY%" -m PyInstaller --onefile --noconsole --clean ^
     --name "NOMINA DOCENTES" ^
+    --icon "favicon.ico" ^
+    --add-data "favicon.ico;." ^
     --collect-all pypdfium2 ^
     generar_nomina.py
 if errorlevel 1 (

@@ -53,6 +53,7 @@ NOMINA_DOCENTES/
 ├── 🚢 publicar.bat                   # Versiona (tag) y publica el EXE en GitHub Releases
 ├── 🔢 bump_version.py                # Actualiza la constante VERSION
 ├── 📦 requirements.txt               # Dependencias (pdfplumber, openpyxl)
+├── 🎨 favicon.ico                    # Icono de la aplicación y del EXE
 ├── 🔏 manual_nombres.py              # (local, no se sube) nombres ambiguos
 ├── 📁 CUADRO_PERSONAL_PDF/           # (opcional) PDFs del cuadro de personal
 └── 📊 NOMINA ...xlsx                 # resultado (excluido del repo por privacidad)
