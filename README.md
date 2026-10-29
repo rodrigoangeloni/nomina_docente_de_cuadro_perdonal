@@ -39,7 +39,7 @@ Genera automáticamente la **nómina de docentes y catedráticos** de una Escuel
 
    \* *Se puede incluir con el flag `--todos` en consola o `INCLUIR_FUNCIONARIOS = True` en el script.*
 4. 📝 **Formatea** el nombre como en la nómina oficial: `APELLIDO(S), NOMBRE(S)` → `PEREZ GOMEZ, JUAN CARLOS`.
-5. 📤 **Genera** el Excel final con el estilo institucional (encabezado azul, bordes, Times New Roman/Calibri).
+5. 📤 **Genera** el Excel final con el estilo institucional (encabezado azul, bordes, Times New Roman/Calibri) y el **nombre y la dirección de la institución tomados del encabezado del PDF**.
 
 ---
 
@@ -47,11 +47,13 @@ Genera automáticamente la **nómina de docentes y catedráticos** de una Escuel
 
 ```text
 NOMINA_DOCENTES/
-├── 📄 generar_nomina.py              # Script principal (toda la lógica)
+├── 📄 generar_nomina.py              # Script principal (lógica + interfaz gráfica)
 ├── 🖱️ generar.bat                    # PC nueva: instala todo + abre el programa
 ├── 🔨 build_exe.bat                  # Compila un EXE para PC sin Python
 ├── 🚢 publicar.bat                   # Versiona (tag) y publica el EXE en GitHub Releases
-├── 🔢 bump_version.py                # Actualiza la constante VERSION
+├── 🔢 bump_version.py                # Actualiza la constante VERSION (SemVer)
+├── 🏷️ generar_version_info.py        # Genera los metadatos de Windows del EXE
+├── 📝 CHANGELOG.md                   # Historial de versiones
 ├── 📦 requirements.txt               # Dependencias (pdfplumber, openpyxl)
 ├── 🎨 favicon.ico                    # Icono de la aplicación y del EXE
 ├── 🔏 manual_nombres.py              # (local, no se sube) nombres ambiguos
@@ -89,15 +91,20 @@ pip install -r requirements.txt
 ### 👩‍🏫 Para usuarios no técnicos (sin Python) — EXE
 
 1. 🔨 En una PC con todo configurado, doble clic en **`build_exe.bat`**.
-2. 📦 Espera a que compile: queda en **`dist\NOMINA DOCENTES.exe`** (un único archivo).
+2. 📦 Espera a que compile: queda en **`dist\NominaDocentes.exe`** (un único archivo).
 3. 📋 Copia ese EXE a cualquier PC (pendrive, correo, red) — **no necesita Python ni instalación**.
 4. 🖱️ Doble clic en el EXE y seguí el flujo de abajo.
 
-### 🖼️ Flujo del programa (con ventanas gráficas)
+### 🖼️ Flujo del programa (interfaz guiada)
 
-1. 📥 Se abre una ventana para **seleccionar el/los cuadro(s) de personal en PDF** — puedes marcar varios con `Ctrl` o `Shift` (ej. el de la Escuela y el del Colegio juntos).
-2. 💾 Luego pide **dónde guardar el Excel** (elegís carpeta y nombre; propone `NOMINA DOCENTES MM-AAAA.xlsx`).
-3. ✅ Al terminar muestra un resumen con la cantidad de docentes y catedráticos, y el archivo queda listo para usar.
+1. 🪟 Se abre la ventana **Nómina de Docentes**, con el nombre de la aplicación, un flujo de tres pasos y una guía de ayuda integrada (botón **? Guía de uso** o tecla `F1`).
+2. 📥 **Paso 1 — Archivos:** hacé clic en **Seleccionar PDFs…** y elegí uno o varios cuadros de personal (con `Ctrl` o `Shift` podés marcar varios; por ejemplo, el de la Escuela y el del Colegio). La lista muestra los archivos elegidos y permite quitarlos o limpiarla.
+3. 💾 **Paso 2 — Destino:** la aplicación propone una carpeta y un nombre (`NOMINA DOCENTES MM-AAAA.xlsx`). Podés cambiarlos con **Cambiar ubicación y nombre…**. Ahí también podés marcar **Incluir funcionarios no docentes (G*)** y **Abrir el Excel automáticamente al finalizar**.
+4. ✅ **Paso 3 — Generar:** revisá el resumen y hacé clic en **Generar nómina ahora**. La barra de progreso y el estado muestran qué está haciendo. Al terminar ves el total de docentes, catedráticos y funcionarios, y podés **Abrir Excel**, **Abrir carpeta** o **Generar de nuevo**.
+
+> 💡 La guía integrada explica cada paso, los requisitos de los PDF y las preguntas frecuentes. También podés volver atrás en cualquier momento para cambiar archivos, destino u opciones.
+>
+> 🏫 Al seleccionar los PDFs, la cabecera de la ventana muestra las instituciones detectadas. El Excel usa ese mismo nombre y la dirección que figuran en el encabezado del Cuadro de Personal.
 
 ### 💻 Modo consola (opcional, para automatizar)
 
@@ -133,9 +140,9 @@ El **EXE se autoverifica** cada vez que se ejecuta:
 Para desarrolladores (en la PC de desarrollo, con el repo clonado):
 
 ```bash
-:: 1. Sube VERSION en el código, compila el EXE, crea el tag vX.Y.Z
+:: 1. Actualiza VERSION, compila el EXE, crea el tag vX.Y.Z
 ::    y publica el Release con el binario (requiere GitHub CLI "gh")
-publicar.bat 1.0.1
+publicar.bat 1.1.0
 ```
 
 Lo que hace por dentro:
@@ -143,13 +150,17 @@ Lo que hace por dentro:
 | Paso | Acción |
 |------|--------|
 | 1️⃣ | Actualiza `VERSION = "x.y.z"` en `generar_nomina.py` (con `bump_version.py`) |
-| 2️⃣ | Compila `dist\NOMINA DOCENTES.exe` con PyInstaller |
-| 3️⃣ | Crea el tag `vx.y.z` y lo sube al repo |
+| 2️⃣ | Genera los metadatos de Windows y compila `dist\NominaDocentes.exe` con PyInstaller |
+| 3️⃣ | Crea el tag `vx.y.z` y lo sube al repo (sin sobrescribir tags existentes) |
 | 4️⃣ | Crea el **Release** en GitHub adjuntando el EXE |
 
 A partir del siguiente arranque, todos los EXE viejos detectan el release nuevo y ofrecen actualizarse. 🎉
 
-> 💡 El script auxiliar `bump_version.py` también se puede usar a mano (`python bump_version.py 1.0.1`) para ajustar la versión sin publicar todavía.
+> 🏷️ **Versionado:** se usa [SemVer](https://semver.org/lang/es/) (`MAJOR.MINOR.PATCH`). La versión se define una sola vez en `VERSION` dentro de `generar_nomina.py`; `generar_version_info.py` la convierte a `1.1.0.0` y completa los metadatos de Windows del EXE (descripción, producto, autor, copyright, idioma). No edites el EXE a mano.
+>
+> 📝 Cada versión se documenta en [`CHANGELOG.md`](CHANGELOG.md).
+>
+> 💡 El script auxiliar `bump_version.py` también se puede usar a mano (`python bump_version.py 1.1.1`) para ajustar la versión sin publicar todavía.
 
 ---
 
@@ -158,6 +169,7 @@ A partir del siguiente arranque, todos los EXE viejos detectan el release nuevo 
 | Paso | Detalle |
 |------|---------|
 | 🔎 **Selección de PDFs** | En modo gráfico elegís uno o varios PDFs de cualquier carpeta; en modo consola (`--cli`) busca recursivamente (hasta 2 niveles) archivos `.pdf` con `ESCUELA` / `COLEGIO` en el nombre y usa el más reciente de cada uno. |
+| 🏫 **Institución** | El nombre y la dirección se leen de la cabecera del Cuadro de Personal (campos 3 y 6 del formulario). Si seleccionás varios PDFs, la nómina muestra las instituciones detectadas. |
 | 🧾 **Lectura de tablas** | Con `pdfplumber` recorre todas las páginas y tablas del cuadro; descarta encabezados, filas vacías y vacantes. |
 | 🔑 **Sin duplicados** | La **cédula** (normalizada, sin ceros a la izquierda) es la clave única: los rubros y turnos repetidos de una misma persona se consolidan en una fila. |
 | 🕐 **Turnos** | Se listan todos los turnos de la persona en orden M → T → N → TN (ej. `M / T / N`). |
@@ -177,7 +189,7 @@ Hoja **`NOMINA DOCENTE 2026`** con estas columnas:
 | 2  | LOPEZ, MARIA ELENA | 7654321 | M | LCE |
 | 3  | GARCIA DE SUAREZ, ANA LUCIA | 4444444 | T | LCE |
 
-- 📌 Cabecera institucional con el nombre de la escuela/colegio y el estilo de la nómina oficial.
+- 📌 Cabecera institucional con el nombre y la dirección extraídos del PDF (si hay varios, se muestran ambas instituciones).
 - 📌 Filas de altura fija, bordes y encabezado azul con texto blanco.
 
 ---
@@ -213,6 +225,8 @@ MANUAL = {
 - 🚫 Las filas con cédula `VACANTE` o sin cédula válida se descartan.
 - 🧩 Si un docente nuevo tiene un nombre compuesto raro, revisar la primera ejecución y ajustar `manual_nombres.py` si hace falta.
 - 📦 Si editás `manual_nombres.py` **después de compilar el EXE**, hay que recompilar con `build_exe.bat` para que el cambio llegue al EXE.
+- 📄 Si volvés a generar la nómina, cerrá el Excel antes de reemplazar el archivo.
+- 🏫 Si el PDF no tiene el encabezado estándar del Cuadro de Personal, la nómina se genera con una cabecera genérica `NÓMINA DE DOCENTES`.
 - 🖥️ El script está pensado para Windows (por el `.bat`), pero funciona igual en Linux/macOS con `python generar_nomina.py`.
 - 🔒 **Privacidad:** los PDFs y los Excel generados contienen **datos personales** (nombres y cédulas). Por eso el `.gitignore` excluye todos los `*.pdf` y `*.xlsx` — **nunca subirlos al repositorio**.
 
@@ -220,4 +234,4 @@ MANUAL = {
 
 ## 🗓️ Última revisión
 
-**28/10/2026** — Modo gráfico: selección de uno o varios PDFs y destino del Excel · `generar.bat` autoinstala Python y dependencias en `.venv` · `build_exe.bat` compila EXE para PC sin Python · autoactualización del EXE vía GitHub Releases + `publicar.bat` para versionar con tags · separación de datos personales (`manual_nombres.py`) fuera del repo.
+**28/10/2026** — **v1.1.0**: interfaz gráfica guiada de 3 pasos con nombre de la aplicación, selección múltiple de PDFs, destino, opciones, barra de progreso, resumen final con accesos para abrir el Excel/carpeta y guía de ayuda integrada (`F1`) · cabecera institucional del Excel y de la app extraída del encabezado del PDF · EXE renombrado a `NominaDocentes.exe` con metadatos de versión/autor/copyright en Windows · `generar.bat` autoinstala Python y dependencias en `.venv` · `build_exe.bat` compila EXE para PC sin Python · autoactualización del EXE vía GitHub Releases + `publicar.bat` para versionar con tags · separación de datos personales (`manual_nombres.py`) fuera del repo.

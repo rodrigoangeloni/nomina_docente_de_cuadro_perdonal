@@ -4,10 +4,12 @@ cd /d "%~dp0"
 title Nomina de Docentes - Compilar EXE
 
 rem ============================================================
-rem  Compila "NOMINA DOCENTES.exe" para usuarios SIN Python.
+rem  Compila "NominaDocentes.exe" para usuarios SIN Python.
 rem  Requiere haber ejecutado generar.bat una vez (crea .venv).
-rem  Resultado: carpeta dist\NOMINA DOCENTES.exe
+rem  Resultado: carpeta dist\NominaDocentes.exe
 rem ============================================================
+
+set "NOMBRE_EXE=NominaDocentes"
 
 if not exist ".venv\Scripts\python.exe" (
     echo  [ERROR] No existe el entorno .venv.
@@ -21,10 +23,19 @@ set "VPY=.venv\Scripts\python.exe"
 echo  Instalando PyInstaller...
 "%VPY%" -m pip install pyinstaller --quiet
 
+echo  Generando metadatos de version...
+"%VPY%" generar_version_info.py
+if errorlevel 1 (
+    echo  [ERROR] No se pudieron generar los metadatos del EXE.
+    pause
+    exit /b 1
+)
+
 echo.
 echo  Compilando EXE - esto tarda unos minutos...
 "%VPY%" -m PyInstaller --onefile --noconsole --clean ^
-    --name "NOMINA DOCENTES" ^
+    --name "%NOMBRE_EXE%" ^
+    --version-file "version_info.txt" ^
     --icon "favicon.ico" ^
     --add-data "favicon.ico;." ^
     --collect-all pypdfium2 ^
@@ -36,7 +47,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo  [OK] EXE generado: dist\NOMINA DOCENTES.exe
+echo  [OK] EXE generado: dist\%NOMBRE_EXE%.exe
 echo       Copia ese archivo a cualquier PC (sin Python) y ejecutalo con doble clic.
 echo.
 pause
