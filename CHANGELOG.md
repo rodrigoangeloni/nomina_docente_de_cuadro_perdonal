@@ -6,6 +6,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 versionado adopta [Semantic Versioning](https://semver.org/lang/es/)
 (`MAJOR.MINOR.PATCH`).
 
+## [Unreleased]
+
+### Changed
+
+- `publicar.bat` ahora se puede ejecutar con doble clic: muestra la versión actual, sugiere patch/minor/major, valida la versión, avisa si falta la sección del changelog y pide confirmación antes de publicar.
+- `bump_version.py` agrega los modos `--show`, `--next patch|minor|major` y `--validate X.Y.Z`.
+
 ## [1.1.0] - 2026-10-28
 
 ### Added

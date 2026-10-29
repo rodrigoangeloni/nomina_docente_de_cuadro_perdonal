@@ -142,8 +142,10 @@ Para desarrolladores (en la PC de desarrollo, con el repo clonado):
 ```bash
 :: 1. Actualiza VERSION, compila el EXE, crea el tag vX.Y.Z
 ::    y publica el Release con el binario (requiere GitHub CLI "gh")
-publicar.bat 1.1.0
+publicar.bat 1.1.1
 ```
+
+> 🖱️ **Doble clic:** también podés ejecutar `publicar.bat` desde el Explorador de Windows. Si no le pasás una versión, muestra la versión actual y te deja elegir **patch**, **minor** o **major** (o escribir una versión manual). Antes de publicar valida que sea mayor que la actual, avisa si falta la sección correspondiente en el changelog y pide confirmación.
 
 Lo que hace por dentro:
 
@@ -160,7 +162,7 @@ A partir del siguiente arranque, todos los EXE viejos detectan el release nuevo 
 >
 > 📝 Cada versión se documenta en [`CHANGELOG.md`](CHANGELOG.md).
 >
-> 💡 El script auxiliar `bump_version.py` también se puede usar a mano (`python bump_version.py 1.1.1`) para ajustar la versión sin publicar todavía.
+> 💡 El script auxiliar `bump_version.py` también se puede usar a mano (`python bump_version.py 1.1.1`) para ajustar la versión sin publicar todavía. Además acepta `--show` (versión actual), `--next patch|minor|major` (próxima versión) y `--validate X.Y.Z` (validar que sea mayor).
 
 ---
 
